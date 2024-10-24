@@ -1,0 +1,20 @@
+library(DESeq2)
+setwd("F:/")
+mycounts <- read.table("/count.txt", header = T, row.names = 1)
+head(mycounts)
+condition <- factor(c(rep("PBS 1d", 3), rep("LPS 1d", 3)), levels = c("PBS 1d","LPS 1d"))
+condition
+colData <- data.frame(row.names = colnames(mycounts), condition)
+colData
+dds <- DESeqDataSetFromMatrix(mycounts, colData, design = ~condition)
+dds <- DESeq(dds)
+res = results(dds, contrast=c("condition", "LPS 1d", "PBS 1d"))
+res = res[order(res$pvalue),]
+head(res)
+summary(res)
+write.csv(res, file="F:/DEG.csv")
+table(res$padj<0.05)
+diff_gene_Group <- subset(res, padj < 0.05 & abs(log2FoldChange) > 1)
+dim(diff_gene_Group)
+head(diff_gene_Group)
+write.csv(diff_gene_Group, file = "/different_gene_Group.csv")

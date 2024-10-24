@@ -1,0 +1,8 @@
+setwd("F:/")
+library(Seurat)
+library(dplyr)
+library(ggplot2)
+single_cell = readRDS("./single_cell_seurat_reduction.rds")
+DEG_data<- FindMarkers(single_cell, ident.1 = "LPS",ident.2 = "Control",group.by = 'orig.ident', logfc.threshold = 0.25)
+dir.create("DEG")
+write.table(DEG_data, "/DEG.xls", col.names = T, row.names = T, sep = "\t")
